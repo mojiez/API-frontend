@@ -62,6 +62,7 @@ declare namespace API {
   };
 
   type LoginParams = {
+    // todo 这里的key传参的时候都没有区分大小写 不知道为什么
     username?: string;
     password?: string;
     autoLogin?: boolean;
