@@ -77,6 +77,27 @@ export default defineConfig({
   layout: {
     locale: true,
     ...defaultSettings,
+    //
+    // navTheme: "realDark",
+    // layout: "top",
+    // contentWidth: "Fixed",
+    // fixedHeader: false,
+    // fixSiderbar: true,
+    // colorPrimary: "#2F54EB",
+    // splitMenus: false
+
+    // name: 'Ant Design Pro',
+    // logo: 'https://preview.pro.ant.design/static/logo.f0355d39.svg',
+    // // copy from pro site
+    // navTheme: 'dark',
+    // primaryColor: '#1890ff',
+    // layout: 'sidemenu',
+    // contentWidth: 'Fluid',
+    // fixedHeader: false,
+    // fixSiderbar: false,
+    // title: 'Ant Design Pro',
+    // pwa: false,
+    // iconfontUrl: '',
   },
   /**
    * @name moment2dayjs 插件

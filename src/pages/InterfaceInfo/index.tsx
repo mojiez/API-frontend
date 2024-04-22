@@ -15,12 +15,15 @@ import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
+import type {SortOrder} from "antd/lib/table/interface";
+import {listInterfaceInfoByPageUsingGet} from "@/services/API-backend/interfaceInfoController";
 
 /**
  * @en-US Add node
  * @zh-CN 添加节点
  * @param fields
  */
+// 处理新增的函数
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('正在添加');
   try {
@@ -43,6 +46,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
  *
  * @param fields
  */
+// 处理更新的函数
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Configuring');
   try {
@@ -67,6 +71,7 @@ const handleUpdate = async (fields: FormValueType) => {
  *
  * @param selectedRows
  */
+// 处理删除的函数
 const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
@@ -83,6 +88,7 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
     return false;
   }
 };
+// 表单
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -104,40 +110,42 @@ const TableList: React.FC = () => {
    * @zh-CN 国际化配置
    * */
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<API.InterfaceInfo>[] = [
     {
-      title: '规则名称',
+      title: '接口名称',
       dataIndex: 'name',
-      tip: 'The rule name is the unique key',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      valueType: "text",
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
-      valueType: 'textarea',
+      title: '接口描述',
+      dataIndex: 'description',
+      valueType: "textarea", // 富文本
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val}${'万'}`,
+      title: '方法',
+      dataIndex: 'method',
+      valueType: "text",
     },
+    {
+      title: '请求头',
+      dataIndex: 'requestHeader',
+      valueType: "text",
+    },
+    {
+      title: '响应头',
+      dataIndex: 'responseHeader',
+      valueType: "text",
+    },
+    {
+      title: 'url',
+      dataIndex: 'url',
+      valueType: "text",
+    },
+
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
+      // hideInForm: true,
       valueEnum: {
         0: {
           text: '关闭',
@@ -147,49 +155,40 @@ const TableList: React.FC = () => {
           text: '运行中',
           status: 'Processing',
         },
-        2: {
-          text: '已上线',
-          status: 'Success',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
-        },
+        // 2: {
+        //   text: '已上线',
+        //   status: 'Success',
+        // },
+        // 3: {
+        //   text: '异常',
+        //   status: 'Error',
+        // },
       },
     },
     {
-      title: '上次调度时间',
-      sorter: true,
-      dataIndex: 'updatedAt',
+      title: '修改时间',
+      dataIndex: 'updateTime',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder={'请输入异常原因！'} />;
-        }
-        return defaultRender(item);
-      },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
     },
     {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'options',
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
-          onClick={() => {
-            handleUpdateModalOpen(true);
-            setCurrentRow(record);
-          }}
+        key="config"
+        onClick={() => {
+          handleUpdateModalOpen(true);
+          setCurrentRow(record);
+        }}
         >
-          配置
-        </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          订阅警报
-        </a>,
+          修改
+        </a>
       ],
     },
   ];
@@ -213,7 +212,31 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={rule}
+        // request是一个函数？
+        request={async (
+          params,
+          sort: Record<string, SortOrder>,
+          filter: Record<string, (string | number)[] | null>,
+        ) => {
+          // 这个函数接收三个参数
+
+          const res = await listInterfaceInfoByPageUsingGet({
+            ...params,
+          });
+          if (res?.data) {
+            return {
+              data: res?.data.records || [],
+              success: true,
+              total: res?.data.total,
+            };
+          } else {
+            return {
+              data: [],
+              success: false,
+              total: 0,
+            };
+          }
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
