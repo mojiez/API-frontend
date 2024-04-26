@@ -7,7 +7,7 @@ export async function addInterfaceInfoUsingPost(
   body: API.InterfaceInfoAddRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponselong>('/api/interfaceInfo/add', {
+  return request<API.BaseResponselong>('http://localhost:7529/api/interfaceInfo/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,12 +17,12 @@ export async function addInterfaceInfoUsingPost(
   });
 }
 
-/** deleteInterfaceInfo POST /api/interfaceInfo/delete */
+/** deleteInterfaceInfo POST http://localhost:7529/api/interfaceInfo/delete */
 export async function deleteInterfaceInfoUsingPost(
   body: API.DeleteRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseboolean>('/api/interfaceInfo/delete', {
+  return request<API.BaseResponseboolean>('http://localhost:7529/api/interfaceInfo/delete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,13 +32,13 @@ export async function deleteInterfaceInfoUsingPost(
   });
 }
 
-/** getInterfaceInfoById GET /api/interfaceInfo/get */
+/** getInterfaceInfoById GET http://localhost:7529/api/interfaceInfo/get */
 export async function getInterfaceInfoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getInterfaceInfoByIdUsingGETParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseInterfaceInfo>('/api/interfaceInfo/get', {
+  return request<API.BaseResponseInterfaceInfo>('http://localhost:7529/api/interfaceInfo/get', {
     method: 'GET',
     params: {
       ...params,
@@ -47,13 +47,13 @@ export async function getInterfaceInfoByIdUsingGet(
   });
 }
 
-/** listInterfaceInfo GET /api/interfaceInfo/list */
+/** listInterfaceInfo GET http://localhost:7529/api/interfaceInfo/list */
 export async function listInterfaceInfoUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.listInterfaceInfoUsingGETParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseListInterfaceInfo>('/api/interfaceInfo/list', {
+  return request<API.BaseResponseListInterfaceInfo>('http://localhost:7529/api/interfaceInfo/list', {
     method: 'GET',
     params: {
       ...params,
@@ -62,7 +62,7 @@ export async function listInterfaceInfoUsingGet(
   });
 }
 
-/** listInterfaceInfoByPage GET /api/interfaceInfo/list/page */
+/** listInterfaceInfoByPage GET http://localhost:7529/api/interfaceInfo/list/page */
 export async function listInterfaceInfoByPageUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.listInterfaceInfoByPageUsingGETParams,
@@ -77,12 +77,12 @@ export async function listInterfaceInfoByPageUsingGet(
   });
 }
 
-/** updateInterfaceInfo POST /api/interfaceInfo/update */
+/** updateInterfaceInfo POST http://localhost:7529/api/interfaceInfo/update */
 export async function updateInterfaceInfoUsingPost(
   body: API.InterfaceInfoUpdateRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseboolean>('/api/interfaceInfo/update', {
+  return request<API.BaseResponseboolean>('http://localhost:7529/api/interfaceInfo/update', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
