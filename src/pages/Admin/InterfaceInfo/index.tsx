@@ -12,11 +12,15 @@ import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type {SortOrder} from "antd/lib/table/interface";
 import {
-  addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost,
-  listInterfaceInfoByPageUsingGet, updateInterfaceInfoUsingPost
+  addInterfaceInfoUsingPost,
+  deleteInterfaceInfoUsingPost,
+  listInterfaceInfoByPageUsingGet,
+  offlineInterfaceInfoUsingPost,
+  publishInterfaceInfoUsingPost,
+  updateInterfaceInfoUsingPost
 } from "@/services/API-backend/interfaceInfoController";
-import CreateModal from "@/pages/InterfaceInfo/components/CreateModal";
-import UpdateModal from "@/pages/InterfaceInfo/components/UpdateModal";
+import CreateModal from "@/pages/Admin/InterfaceInfo/components/CreateModal";
+import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 
 
 
@@ -67,6 +71,55 @@ const TableList: React.FC = () => {
     }
   };
 
+  /**
+   *  发布 node
+   * @zh-CN 发布接口
+   *
+   * @param record
+   */
+// 发布
+  const handlePublish = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('正在删除');
+    if (!record) return true;
+    try {
+      await publishInterfaceInfoUsingPost({
+        id: record.id,
+      });
+      hide();
+      message.success('published successfully and will refresh soon');
+      actionRef.current?.reload();
+      return true;
+    } catch (error:any) {
+      hide();
+      message.error('发布失败, '+ error.message);
+      return false;
+    }
+  };
+
+  /**
+   *  下线 node
+   * @zh-CN 下线接口
+   *
+   * @param record
+   */
+// 下线
+  const handleOffline = async (record: API.InterfaceInfo) => {
+    const hide = message.loading('正在删除');
+    if (!record) return true;
+    try {
+      await offlineInterfaceInfoUsingPost({
+        id: record.id,
+      });
+      hide();
+      message.success('offlined successfully and will refresh soon');
+      actionRef.current?.reload();
+      return true;
+    } catch (error:any) {
+      hide();
+      message.error('下线失败, '+ error.message);
+      return false;
+    }
+  };
   /**
    * @en-US Update node
    * @zh-CN 更新节点
@@ -212,25 +265,49 @@ const TableList: React.FC = () => {
       dataIndex: 'options',
       valueType: 'option',
       render: (_, record) => [
-        <>
-          <a
+        <Button
+          type={"text"}
+          key="config"
+          onClick={() => {
+            handleUpdateModalOpen(true);
+            setCurrentRow(record);
+          }}
+        >
+          修改
+        </Button>,
+        <Button
+          type={"text"}
+          key="config"
+          onClick={() => {
+            handleRemove(record);
+          }}
+        >
+          删除
+        </Button>,
+        record.status === 0 ? (
+          <Button
+            type={"text"}
             key="config"
             onClick={() => {
-              handleUpdateModalOpen(true);
-              setCurrentRow(record);
+              handlePublish(record);
             }}
           >
-            修改
-          </a>
-          <a
+            发布
+          </Button>
+        ) : null,
+
+        record.status === 1 ? (
+          <Button
+            type={"text"}
+            danger
             key="config"
             onClick={() => {
-              handleRemove(record);
+              handleOffline(record);
             }}
           >
-            删除
-          </a>
-        </>,
+            下线
+          </Button>
+        ) : null,
       ],
     },
   ];
@@ -342,11 +419,30 @@ const TableList: React.FC = () => {
         )}
       </Drawer>
 
-    {/*  引入定义好的CreateModal React组件传入参数*/}
-      <CreateModal columns={columns} onCancel={() => {handleModalOpen(false)}} onSubmit={(values) => {handleAdd(values)}} visible={createModalOpen} />
+      {/*  引入定义好的CreateModal React组件传入参数*/}
+      <CreateModal
+        columns={columns}
+        onCancel={() => {
+          handleModalOpen(false);
+        }}
+        onSubmit={(values) => {
+          handleAdd(values);
+        }}
+        visible={createModalOpen}
+      />
 
       {/*点击修改 弹出来的UpdateForm 引入组件*/}
-      <UpdateModal columns={columns} onCancel={() => {handleUpdateModalOpen(false)}} onSubmit={(values) => {handleUpdate(values)}} visible={updateModalOpen} values={currentRow || {}}/>
+      <UpdateModal
+        columns={columns}
+        onCancel={() => {
+          handleUpdateModalOpen(false);
+        }}
+        onSubmit={(values) => {
+          handleUpdate(values);
+        }}
+        visible={updateModalOpen}
+        values={currentRow || {}}
+      />
     </PageContainer>
   );
 };

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** addInterfaceInfo POST /api/interfaceInfo/add */
+/** addInterfaceInfo POST http://localhost:7529/api/interfaceInfo/add */
 export async function addInterfaceInfoUsingPost(
   body: API.InterfaceInfoAddRequest,
   options?: { [key: string]: any },
@@ -73,6 +73,36 @@ export async function listInterfaceInfoByPageUsingGet(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** offlineInterfaceInfo POST http://localhost:7529/api/interfaceInfo/offline */
+export async function offlineInterfaceInfoUsingPost(
+  body: API.IdRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseboolean>('http://localhost:7529/api/interfaceInfo/offline', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** publishInterfaceInfo POST http://localhost:7529/api/interfaceInfo/publish */
+export async function publishInterfaceInfoUsingPost(
+  body: API.IdRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseboolean>('http://localhost:7529/api/interfaceInfo/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   });
 }
