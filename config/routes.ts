@@ -1,13 +1,20 @@
 ﻿export default [
-  { path: '/user', layout: false, routes: [{ path: '/user/login', component: './User/Login' }] },
   {
-    path: '/welcome',
+    path: '/',
     icon: 'smile',
-    component: './Welcome',
+    component: './Index',
     menu: {
       name: 'Welcome', // 希望显示的菜单项的文本
     },
   },
+
+  {
+    path: '/interface_info/:id',
+    component: './InterfaceInfo',
+  },
+
+  { path: '/user', layout: false, routes: [{ path: '/user/login', component: './User/Login' }] },
+
   {
     path: '/admin',
     icon: 'crown',
@@ -24,7 +31,7 @@
 
   // { icon: 'table', path: '/list', component: './InterfaceInfo', menu: { name: 'AdminInterface' } },
 
-  // 访问主页时 自动重定向到欢迎页面
-  { path: '/', redirect: '/welcome' },
+  // // 访问主页时 自动重定向到欢迎页面
+  // { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];
