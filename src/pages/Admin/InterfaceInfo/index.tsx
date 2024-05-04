@@ -43,9 +43,9 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
-
+  const [currentId, setCurrentId] = useState<number>(); // 记录id
   /**
    *  Delete node
    * @zh-CN 删除节点
@@ -129,8 +129,10 @@ const TableList: React.FC = () => {
 // 处理更新的函数
   const handleUpdate = async (fields: API.InterfaceInfo) => {
     const hide = message.loading('Configuring');
+    if (!currentRow) return ;
     try {
       await updateInterfaceInfoUsingPost({
+        id: currentRow.id,
         ...fields,
       });
       hide();
@@ -182,9 +184,10 @@ const TableList: React.FC = () => {
     {
       title: '接口id',
       dataIndex: 'id',
-      valueType: 'text',
+      valueType: 'index',
       // 这里如果设置了这个，更新时id不会传给后端 导致报错，但是我又不想修改id，怎么办？
       // hideInForm:true,
+
     },
     {
       title: '接口名称',
@@ -212,6 +215,11 @@ const TableList: React.FC = () => {
     {
       title: '请求头',
       dataIndex: 'requestHeader',
+      valueType: 'text',
+    },
+    {
+      title: '请求参数',
+      dataIndex: 'requestParams',
       valueType: 'text',
     },
     {
@@ -266,7 +274,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <Button
-          type={"text"}
+          type={'text'}
           key="config"
           onClick={() => {
             handleUpdateModalOpen(true);
@@ -276,7 +284,7 @@ const TableList: React.FC = () => {
           修改
         </Button>,
         <Button
-          type={"text"}
+          type={'text'}
           key="config"
           onClick={() => {
             handleRemove(record);
@@ -286,7 +294,7 @@ const TableList: React.FC = () => {
         </Button>,
         record.status === 0 ? (
           <Button
-            type={"text"}
+            type={'text'}
             key="config"
             onClick={() => {
               handlePublish(record);
@@ -298,7 +306,7 @@ const TableList: React.FC = () => {
 
         record.status === 1 ? (
           <Button
-            type={"text"}
+            type={'text'}
             danger
             key="config"
             onClick={() => {
