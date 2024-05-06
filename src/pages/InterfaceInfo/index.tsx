@@ -1,8 +1,8 @@
 import { PageContainer } from '@ant-design/pro-components';
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Descriptions, Form, Input, List, message, Skeleton} from "antd";
+import {Button, Card, Descriptions, Form, Input, List, message, Skeleton, Spin} from "antd";
 import {
-  getInterfaceInfoByIdUsingGet,
+  getInterfaceInfoByIdUsingGet, invokeInterfaceInfoUsingPost,
   listInterfaceInfoByPageUsingGet
 } from "@/services/API-backend/interfaceInfoController";
 import {useMatch, useParams} from "react-router";
@@ -12,9 +12,11 @@ import TextArea from "antd/es/input/TextArea";
 const Index: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
+  const [invokeLoading, setInvokeLoading] = useState(false);
   const [data, setData] = useState<API.InterfaceInfo>();
   // const match = useMatch('/interface_info/:id')
   const params = useParams();
+  const [invokeRes, setInvokeRes] = useState<any>()
   // 加载数据方法
   const loadData = async () => {
     if (!params.id) {
@@ -32,8 +34,26 @@ const Index: React.FC = () => {
     }
     setLoading(false);// 表示已经加载完成
   }
-  const onFinish = (values: any) => {
+  const onFinish =async (values: any) => {
     console.log(values);
+    if (!params.id) {
+      message.error('参数不存在');
+      return;
+    }
+    setInvokeLoading(true);
+    try {
+      const res = await invokeInterfaceInfoUsingPost({
+        id: params.id,
+        ...values
+      })
+      // 把响应的data数据保存 回显 到用户界面上
+      setInvokeRes(res.data);
+      message.success("invoke成功");
+
+    }catch (error:any) {
+      message.error("invoke失败" + error.message);
+    }
+    setInvokeLoading(false);
   };
   // 加载数据的逻辑
   useEffect( ()=> {
@@ -57,7 +77,7 @@ const Index: React.FC = () => {
           <>接口不存在</>
         )}
       </Card>
-      <Card>
+      <Card title={"在线测试"}>
         <Form
           name="invoke"
           // labelCol={{ span: 8 }}
@@ -68,7 +88,7 @@ const Index: React.FC = () => {
         >
           <Form.Item
             label="请求参数"
-            name="requestParams"
+            name="userRequestParams"
           >
             <TextArea/>
           </Form.Item>
@@ -80,6 +100,9 @@ const Index: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+      </Card>
+      <Card title={"返回结果"} loading={invokeLoading}>
+        {invokeRes}
       </Card>
     </PageContainer>
   );

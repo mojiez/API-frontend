@@ -184,10 +184,9 @@ const TableList: React.FC = () => {
     {
       title: '接口id',
       dataIndex: 'id',
-      valueType: 'index',
+      valueType: 'text',
       // 这里如果设置了这个，更新时id不会传给后端 导致报错，但是我又不想修改id，怎么办？
-      // hideInForm:true,
-
+      hideInForm:true,
     },
     {
       title: '接口名称',
