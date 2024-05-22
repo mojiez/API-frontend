@@ -23,6 +23,7 @@
       { path: '/admin', redirect: '/admin/sub-page', menu: { name: 'MainPage'} },
       { path: '/admin/sub-page', component: './Admin/Admin', menu: { name: 'SubPage'} },
       { path: '/admin/interface_info', component: './Admin/InterfaceInfo', menu: { name: 'InterfaceInfoPage'}},
+      { path: '/admin/interface_analysis', component: './Admin/InterfaceAnalysis', menu: { name: 'InterfaceAnalysisPage'}},
     ],
     menu: {
       name: 'Admin', // 希望显示的菜单项的文本
